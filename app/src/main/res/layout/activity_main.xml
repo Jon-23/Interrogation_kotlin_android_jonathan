@@ -3,8 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="10sp"
-    android:paddingRight="10sp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -15,17 +13,21 @@
 
         <EditText
             android:id="@+id/plain_text_input"
-            android:layout_height="40sp"
+            android:layout_height="60sp"
             android:layout_width="match_parent"
             android:layout_weight="1"
+            android:layout_marginRight="5sp"
+            android:maxLines="1"
             android:hint="@string/hello"
             android:inputType="text"/>
 
         <Button
-            android:layout_width="40sp"
+            android:layout_width="50sp"
             android:layout_height="match_parent"
             android:layout_weight="0"
+            android:layout_marginRight="5sp"
             android:text="+"
+            android:textSize="20sp"
             ></Button>
 
     </LinearLayout>
