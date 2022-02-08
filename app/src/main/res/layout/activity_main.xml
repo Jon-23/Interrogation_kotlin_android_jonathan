@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="10sp"
+    android:paddingRight="10sp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0">
+
+        <EditText
+            android:id="@+id/plain_text_input"
+            android:layout_height="40sp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/hello"
+            android:inputType="text"/>
+
+        <Button
+            android:layout_width="40sp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:text="+"
+            ></Button>
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/list"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

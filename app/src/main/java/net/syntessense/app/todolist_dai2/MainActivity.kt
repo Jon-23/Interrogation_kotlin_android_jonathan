@@ -13,7 +13,7 @@ import android.widget.*
 
 class MyAdapter(val context: Context) : BaseAdapter() {
     override fun getCount(): Int {
-        return 1000
+        return 50
     }
 
     override fun getItem(i: Int): String {
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // supportActionBar?.hide()
+        supportActionBar?.hide()
         findViewById<ListView>(R.id.list).adapter = MyAdapter(this)
     }
 
