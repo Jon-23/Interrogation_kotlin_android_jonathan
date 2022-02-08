@@ -13,7 +13,7 @@ import android.widget.*
 
 class MyAdapter(val context: Context) : BaseAdapter() {
     override fun getCount(): Int {
-        return 10
+        return 1000
     }
 
     override fun getItem(i: Int): String {
