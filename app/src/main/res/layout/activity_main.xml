@@ -12,30 +12,38 @@
         android:layout_weight="0">
 
         <EditText
-            android:id="@+id/plain_text_input"
-            android:layout_height="60sp"
+            android:id="@+id/filter_text"
             android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:layout_marginRight="5sp"
             android:layout_weight="1"
-            android:layout_marginRight="5sp"
-            android:maxLines="1"
-            android:hint="@string/hello"
-            android:inputType="text"/>
-
-        <Button
-            android:layout_width="50sp"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:layout_marginRight="5sp"
-            android:text="+"
-            android:textSize="20sp"
-            ></Button>
+            android:drawableEnd="@android:drawable/presence_offline"
+            android:hint="filter"
+            android:inputType="text"
+            android:maxLines="1" />
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_weight="1"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@android:drawable/ic_input_add"
+            android:layout_weight="0"
+            android:contentDescription="add"
+            android:layout_margin="16dp" />
+
+    </FrameLayout>
 
 </LinearLayout>

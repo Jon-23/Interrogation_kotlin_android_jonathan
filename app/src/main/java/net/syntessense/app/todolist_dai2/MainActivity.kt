@@ -1,12 +1,19 @@
 package net.syntessense.app.todolist_dai2
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+
 
 // import androidx.appcompat.app.ActionBar
 
@@ -39,6 +46,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         //supportActionBar?.hide()
         findViewById<ListView>(R.id.list).adapter = MyAdapter(this)
+        val edt = findViewById<EditText>(R.id.filter_text)
+        edt.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.length > 0)
+                    edt.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                else edt.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+                // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) {
+
+                // TODO Auto-generated method stub
+            }
+        })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+        return true
     }
 
 }

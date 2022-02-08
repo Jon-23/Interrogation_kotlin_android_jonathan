@@ -3,9 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ab_share_pack_material.xml" value="0.119" />
+        <entry key="app/src/main/res/drawable/action_bar_divider.xml" value="0.1025" />
+        <entry key="app/src/main/res/drawable/btn_plus.xml" value="0.119" />
+        <entry key="app/src/main/res/drawable/btn_toggle_bg.xml" value="0.119" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.119" />
+        <entry key="app/src/main/res/drawable/ratingbar.xml" value="0.1025" />
         <entry key="app/src/main/res/layout-fr/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29333333333333333" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.12409420289855072" />
+        <entry key="app/src/main/res/menu/menu_done.xml" value="0.11041666666666666" />
+        <entry key="app/src/main/res/menu/menu_main.xml" value="0.11041666666666666" />
       </map>
     </option>
   </component>
