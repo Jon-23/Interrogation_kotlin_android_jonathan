@@ -11,13 +11,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="0">
 
-        <EditText
+        <net.syntessense.app.todolist_dai2.MyEditText
             android:id="@+id/filter_text"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginRight="5sp"
             android:layout_weight="1"
-            android:drawableEnd="@android:drawable/presence_offline"
             android:hint="filter"
             android:inputType="text"
             android:maxLines="1" />

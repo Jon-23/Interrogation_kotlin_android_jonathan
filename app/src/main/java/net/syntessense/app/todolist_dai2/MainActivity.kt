@@ -4,10 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.util.AttributeSet
+import android.view.*
 import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.ListView
@@ -39,6 +37,23 @@ class MyAdapter(val context: Context) : BaseAdapter() {
 
 }
 
+class MyEditText : androidx.appcompat.widget.AppCompatEditText {
+    constructor(ctx: Context) : super(ctx)
+    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs)
+
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            var location : IntArray = intArrayOf(0, 0)
+            this.getLocationOnScreen(location)
+            if ( event.x >= location[0] + this.width * 0.9 )
+                this.text = null
+        }
+        return super.onTouchEvent(event)
+    }
+
+}
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +65,8 @@ class MainActivity : AppCompatActivity() {
         edt.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length > 0)
-                    edt.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                else edt.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    edt.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.remove_text, 0)
+                else edt.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
