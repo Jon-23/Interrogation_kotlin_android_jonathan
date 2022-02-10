@@ -42,9 +42,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
 
+
         val lst = findViewById<ListView>(R.id.list)
         val edt = findViewById<EditText>(R.id.filter_text)
         val clr = findViewById<ImageButton>(R.id.clear_text)
+        val men = findViewById<ImageButton>(R.id.menu)
 
         lst.adapter = MyAdapter(this)
         lst.divider = null
@@ -52,9 +54,13 @@ class MainActivity : AppCompatActivity() {
 
         edt.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty())
+                if (s.isNotEmpty()) {
+                    men.visibility = View.GONE
                     clr.visibility = View.VISIBLE
-                else clr.visibility = View.GONE
+                } else {
+                    clr.visibility = View.GONE
+                    men.visibility = View.VISIBLE
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
