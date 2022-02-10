@@ -1,19 +1,17 @@
 package net.syntessense.app.todolist_dai2
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.MotionEvent
-import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
-import android.widget.ListView
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 
@@ -52,6 +50,7 @@ class DatePickerFragment(private val activity: Context) : DialogFragment(), Date
 }
 
 class TodoAdd : AppCompatActivity() {
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
@@ -64,7 +63,7 @@ class TodoAdd : AppCompatActivity() {
             if (event?.action == MotionEvent.ACTION_DOWN) {
                 TimePickerFragment().show(supportFragmentManager, "timePicker")
             }
-            dpicker.performClick()
+            tpicker.performClick()
             true
         }
 
