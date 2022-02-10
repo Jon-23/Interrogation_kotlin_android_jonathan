@@ -15,6 +15,7 @@
         <entry key="app/src/main/res/drawable/rounded_bar.xml" value="0.226" />
         <entry key="app/src/main/res/layout-fr/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/layout/activity_todo_add.xml" value="0.14270833333333333" />
         <entry key="app/src/main/res/layout/filter_bar.xml" value="0.15579710144927536" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.12409420289855072" />
         <entry key="app/src/main/res/menu/menu_done.xml" value="0.11041666666666666" />

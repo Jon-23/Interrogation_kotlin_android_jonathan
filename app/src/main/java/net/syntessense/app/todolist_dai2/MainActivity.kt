@@ -2,16 +2,13 @@ package net.syntessense.app.todolist_dai2
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-
-
-// import androidx.appcompat.app.ActionBar
-
 
 class MyAdapter(private val context: Context) : BaseAdapter() {
     override fun getCount(): Int {
@@ -39,10 +36,10 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         supportActionBar?.hide()
+        setContentView(R.layout.activity_main)
 
-
+        val fab = findViewById<View>(R.id.fab)
         val lst = findViewById<ListView>(R.id.list)
         val edt = findViewById<EditText>(R.id.filter_text)
         val clr = findViewById<ImageButton>(R.id.clear_text)
@@ -51,6 +48,10 @@ class MainActivity : AppCompatActivity() {
         lst.adapter = MyAdapter(this)
         lst.divider = null
         clr.visibility = View.GONE
+
+        fab.setOnClickListener { view ->
+            startActivity(Intent(this, TodoAdd::class.java))
+        }
 
         edt.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -79,11 +80,5 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    /*
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-    */
+
 }
