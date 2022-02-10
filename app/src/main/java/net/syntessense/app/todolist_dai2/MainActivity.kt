@@ -1,11 +1,10 @@
 package net.syntessense.app.todolist_dai2
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 // import androidx.appcompat.app.ActionBar
 
 
-class MyAdapter(val context: Context) : BaseAdapter() {
+class MyAdapter(private val context: Context) : BaseAdapter() {
     override fun getCount(): Int {
         return 50
     }
@@ -37,6 +36,7 @@ class MyAdapter(val context: Context) : BaseAdapter() {
 
 class MainActivity : AppCompatActivity() {
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -70,14 +70,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        clr.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(view: View?, event: MotionEvent?): Boolean {
-                if (event?.action == MotionEvent.ACTION_DOWN) {
-                    edt.text = null
-                }
-                return true
+        clr.setOnTouchListener { _, event ->
+            if (event?.action == MotionEvent.ACTION_DOWN) {
+                edt.text = null
             }
-        })
+            clr.performClick()
+            true
+        }
 
     }
     /*
