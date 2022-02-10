@@ -3,8 +3,9 @@
     android:id="@+id/item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="5sp"
-    android:paddingBottom="5sp"
-    android:paddingLeft="5sp"
+    android:paddingTop="10sp"
+    android:paddingBottom="10sp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     android:text="@string/hello">
 </TextView>

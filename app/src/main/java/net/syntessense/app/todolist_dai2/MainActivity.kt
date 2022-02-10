@@ -7,10 +7,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
-import android.widget.BaseAdapter
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -38,75 +35,50 @@ class MyAdapter(val context: Context) : BaseAdapter() {
 
 }
 
-class MyEditText : androidx.appcompat.widget.AppCompatEditText {
-    constructor(ctx: Context) : super(ctx)
-    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs)
-
-
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.action == MotionEvent.ACTION_DOWN) {
-            //this.compoundDrawables[2].
-            if ( this.compoundDrawablesRelative[2] != null ) {
-                var location : IntArray = intArrayOf(0, 0)
-                this.getLocationOnScreen(location)
-
-                val iconXmin = location[0] + this.width - this.compoundPaddingEnd
-                val iconYmin = location[1] + (this.height - this.compoundDrawablesRelative[2].bounds.height()) / 2
-
-                val iconXmax = iconXmin + this.compoundDrawablesRelative[2].bounds.width()
-                val iconYmax = iconYmin + this.compoundDrawablesRelative[2].bounds.height()
-
-                Log.i("dimension", this.compoundDrawablesRelative[2].bounds.toString())
-                Log.i("iconXmin", iconXmin.toString())
-                Log.i("iconXmax", iconXmax.toString())
-                Log.i("iconYmin", iconYmin.toString())
-                Log.i("iconYmax", iconYmax.toString())
-                Log.i("eventX", event.rawX.toString())
-                Log.i("eventY", event.rawY.toString())
-
-                if ( iconXmin <= event.rawX && event.rawX < iconXmax &&
-                    iconYmin <= event.rawY && event.rawY < iconYmax )
-                    this.text = null
-            }
-            //if ( event.x >= location[0] + this.width * 0.9 )
-            //    this.text = null
-        }
-        return super.onTouchEvent(event)
-    }
-
-}
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //supportActionBar?.hide()
-        findViewById<ListView>(R.id.list).adapter = MyAdapter(this)
+        supportActionBar?.hide()
+
+        val lst = findViewById<ListView>(R.id.list)
         val edt = findViewById<EditText>(R.id.filter_text)
+        val clr = findViewById<ImageButton>(R.id.clear_text)
+
+        lst.adapter = MyAdapter(this)
+        lst.divider = null
+        clr.visibility = View.GONE
+
         edt.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length > 0)
-                    edt.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.remove_text, 0)
-                else edt.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                if (s.isNotEmpty())
+                    clr.visibility = View.VISIBLE
+                else clr.visibility = View.GONE
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-                // TODO Auto-generated method stub
             }
 
             override fun afterTextChanged(s: Editable) {
-
-                // TODO Auto-generated method stub
             }
         })
-    }
 
+        clr.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+                if (event?.action == MotionEvent.ACTION_DOWN) {
+                    edt.text = null
+                }
+                return true
+            }
+        })
+
+    }
+    /*
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
         return true
     }
-
+    */
 }
