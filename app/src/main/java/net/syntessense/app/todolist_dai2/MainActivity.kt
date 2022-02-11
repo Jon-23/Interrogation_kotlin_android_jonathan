@@ -6,9 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginLeft
 
 class MyAdapter(private val context: Context) : BaseAdapter() {
     override fun getCount(): Int {
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         val edt = findViewById<EditText>(R.id.filter_text)
         val clr = findViewById<ImageButton>(R.id.clear_text)
         val men = findViewById<ImageButton>(R.id.menu)
+        val mic = findViewById<ImageButton>(R.id.micro)
 
         lst.adapter = MyAdapter(this)
         lst.divider = null
@@ -56,11 +59,11 @@ class MainActivity : AppCompatActivity() {
         edt.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    men.visibility = View.GONE
+                    mic.visibility = View.GONE
                     clr.visibility = View.VISIBLE
                 } else {
                     clr.visibility = View.GONE
-                    men.visibility = View.VISIBLE
+                    mic.visibility = View.VISIBLE
                 }
             }
 
