@@ -56,6 +56,7 @@ class TodoAdd : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(R.layout.activity_todo_add)
 
+        /*
         val dpicker = findViewById<Button>(R.id.datepicker)
         val tpicker = findViewById<Button>(R.id.timepicker)
 
@@ -75,5 +76,6 @@ class TodoAdd : AppCompatActivity() {
             dpicker.performClick()
             true
         }
+        */
     }
 }
