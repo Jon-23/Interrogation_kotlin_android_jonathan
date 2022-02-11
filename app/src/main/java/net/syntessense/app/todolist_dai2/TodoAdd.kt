@@ -75,6 +75,7 @@ class TodoAdd : AppCompatActivity() {
 
         val fab = findViewById<View>(R.id.fab)
         fab.setOnLongClickListener(View.OnLongClickListener {
+            /*
             val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
@@ -117,6 +118,8 @@ class TodoAdd : AppCompatActivity() {
                     TODO("Not yet implemented")
                 }
             })
+            
+             */
             true
         })
 
