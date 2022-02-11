@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.TODOLIST_DAI2" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">#222222</item>
+        <item name="colorPrimaryVariant">#222222</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -13,4 +13,5 @@
         <item name="android:statusBarColor" tools:targetApi="l">#222222</item>
         <!-- Customize your theme here. -->
     </style>
+
 </resources>

@@ -11,6 +11,7 @@
         android:theme="@style/Theme.TODOLIST_DAI2">
         <activity
             android:name=".TodoAdd"
+            android:label="New task"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

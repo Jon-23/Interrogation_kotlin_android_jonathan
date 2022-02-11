@@ -53,8 +53,11 @@ class TodoAdd : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
+        //supportActionBar?.hide()
         setContentView(R.layout.activity_todo_add)
+
+        getSupportActionBar()?.elevation = 0F
+        //getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
 
         /*
         val dpicker = findViewById<Button>(R.id.datepicker)
