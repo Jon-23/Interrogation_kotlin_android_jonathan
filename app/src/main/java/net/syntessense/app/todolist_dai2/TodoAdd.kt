@@ -14,11 +14,16 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.format.DateFormat as DF
 import android.view.View
+import android.webkit.WebSettings
 import android.widget.*
 import androidx.fragment.app.DialogFragment
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import net.syntessense.app.todolist_dai2.databinding.ActivityTodoAddBinding
 import java.text.DateFormat
 import java.util.*
@@ -63,9 +68,25 @@ class TodoAdd : AppCompatActivity() {
         setContentView(bindings.root)
         getSupportActionBar()?.elevation = 0F
 
+        val speech2textLauncher = SpeechAnalysis(this)
+
         val title = bindings.titleText
         val fab = bindings.fab
 
+
+        bindings.titleText.setOnLongClickListener {
+            speech2textLauncher.start { result ->
+                bindings.titleText.text = Editable.Factory.getInstance().newEditable(result)
+            }
+            true
+        }
+
+        bindings.descText.setOnLongClickListener {
+            speech2textLauncher.start { result ->
+                bindings.descText.text = Editable.Factory.getInstance().newEditable(result)
+            }
+            true
+        }
 
         fab.setOnClickListener(View.OnClickListener {
             finish()

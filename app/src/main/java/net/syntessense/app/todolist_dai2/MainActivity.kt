@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginLeft
+import androidx.room.Room
 import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
 
 class MyAdapter(private val context: Context) : BaseAdapter() {
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(bindings.root)
         supportActionBar?.hide()
 
+        val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "todosDB").build()
+
         val fab = bindings.fab
         val lst = bindings.list
         val edt = bindings.filterBar.filterText
@@ -56,11 +59,17 @@ class MainActivity : AppCompatActivity() {
         lst.divider = null
         clr.visibility = View.GONE
 
-
         mic.setOnClickListener {
             speech2textLauncher.start { result ->
                 edt.text = Editable.Factory.getInstance().newEditable(result)
             }
+        }
+
+        edt.setOnLongClickListener {
+            speech2textLauncher.start { result ->
+                edt.text = Editable.Factory.getInstance().newEditable(result)
+            }
+            true
         }
 
         fab.setOnClickListener { view ->
