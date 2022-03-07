@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="#222222">
 
-    <include layout="@layout/filterbar"/>
+    <include android:id="@+id/filterBar" layout="@layout/filterbar"/>
 
     <FrameLayout
         android:layout_width="match_parent"

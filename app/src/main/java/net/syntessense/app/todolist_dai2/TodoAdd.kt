@@ -19,6 +19,7 @@ import android.text.format.DateFormat as DF
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.DialogFragment
+import net.syntessense.app.todolist_dai2.databinding.ActivityTodoAddBinding
 import java.text.DateFormat
 import java.util.*
 
@@ -58,12 +59,12 @@ class TodoAdd : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //supportActionBar?.hide()
         //getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
-        setContentView(R.layout.activity_todo_add)
+        val bindings = ActivityTodoAddBinding.inflate(layoutInflater)
+        setContentView(bindings.root)
         getSupportActionBar()?.elevation = 0F
 
-        var title = findViewById<EditText>(R.id.title_text)
-
-        val fab = findViewById<View>(R.id.fab)
+        val title = bindings.titleText
+        val fab = bindings.fab
 
 
         fab.setOnClickListener(View.OnClickListener {
@@ -73,7 +74,7 @@ class TodoAdd : AppCompatActivity() {
 
         var priority = 0
         var priorities = arrayOf("#00bb00", "#ff9900", "#ff0000")
-        val prio = findViewById<TextView>(R.id.priority_text)
+        val prio = bindings.priorityText
         prio.setOnClickListener(View.OnClickListener {
             priority = (priority + 1) % priorities.size
             prio.setBackgroundColor(Color.parseColor(priorities[priority]))
@@ -81,8 +82,8 @@ class TodoAdd : AppCompatActivity() {
 
 
         val todoDate = Date()
-        val tpicker = findViewById<TextView>(R.id.time_text)
-        val dpicker = findViewById<TextView>(R.id.date_text)
+        val tpicker = bindings.timeText
+        val dpicker = bindings.dateText
 
         tpicker.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(todoDate)
         dpicker.text = DateFormat.getDateInstance(DateFormat.MEDIUM, ).format(todoDate)

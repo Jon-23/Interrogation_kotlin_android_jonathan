@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginLeft
+import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
 
 class MyAdapter(private val context: Context) : BaseAdapter() {
     override fun getCount(): Int {
@@ -38,19 +39,29 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val bindings = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(bindings.root)
         supportActionBar?.hide()
-        setContentView(R.layout.activity_main)
 
-        val fab = findViewById<View>(R.id.fab)
-        val lst = findViewById<ListView>(R.id.list)
-        val edt = findViewById<EditText>(R.id.filter_text)
-        val clr = findViewById<ImageButton>(R.id.clear_text)
-        val men = findViewById<ImageButton>(R.id.menu)
-        val mic = findViewById<ImageButton>(R.id.micro)
+        val fab = bindings.fab
+        val lst = bindings.list
+        val edt = bindings.filterBar.filterText
+        val clr = bindings.filterBar.clearText
+        val men = bindings.filterBar.menu
+        val mic = bindings.filterBar.micro
+
+        val speech2textLauncher = SpeechAnalysis(this)
 
         lst.adapter = MyAdapter(this)
         lst.divider = null
         clr.visibility = View.GONE
+
+
+        mic.setOnClickListener {
+            speech2textLauncher.start { result ->
+                edt.text = Editable.Factory.getInstance().newEditable(result)
+            }
+        }
 
         fab.setOnClickListener { view ->
             startActivity(Intent(this, TodoAdd::class.java))
@@ -85,3 +96,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
+
+
+
+
+
