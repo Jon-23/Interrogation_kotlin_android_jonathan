@@ -17,46 +17,37 @@ import android.speech.SpeechRecognizer
 import android.text.SpannableStringBuilder
 import android.text.format.DateFormat as DF
 import android.view.View
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.TimePicker
+import android.widget.*
 import androidx.fragment.app.DialogFragment
 import java.text.DateFormat
 import java.util.*
 
-class TimePickerFragment(val callback: (Int, Int) -> Unit) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+class TimePickerFragment(val time: Pair<Int, Int>, val callback: (Int, Int) -> Unit) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+    constructor(callback: (Int, Int) -> Unit): this(
+        Calendar.getInstance().let{ Pair(it.get(Calendar.HOUR_OF_DAY), it.get(Calendar.MINUTE))},
+        callback
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Use the current time as the default values for the picker
-        val c = Calendar.getInstance()
-        val hour = c.get(Calendar.HOUR_OF_DAY)
-        val minute = c.get(Calendar.MINUTE)
-
-        // Create a new instance of TimePickerDialog and return it
-        return TimePickerDialog(activity, this, hour, minute, DF.is24HourFormat(activity))
+        return TimePickerDialog(activity, this, time.first, time.second, DF.is24HourFormat(activity))
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        // Do something with the time chosen by the user
         callback(hourOfDay, minute)
     }
 }
-class DatePickerFragment(private val activity: Context, val callback: (Int, Int, Int) -> Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerFragment(private val activity: Context, private val showDate: Triple<Int, Int, Int>, val callback: (Int, Int, Int) -> Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+    constructor(activity: Context, callback: (Int, Int, Int) -> Unit) : this(
+        activity,
+        Calendar.getInstance().let{ Triple(it.get(Calendar.YEAR), it.get(Calendar.MONTH), it.get(Calendar.DAY_OF_MONTH))},
+        callback
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Use the current date as the default date in the picker
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
-
-        // Create a new instance of DatePickerDialog and return it
-        return DatePickerDialog(activity, this, year, month, day)
+        return DatePickerDialog(activity, this, showDate.first, showDate.second, showDate.third)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-        // Do something with the date chosen by the user
         callback(year, month, day)
     }
 }
@@ -71,57 +62,9 @@ class TodoAdd : AppCompatActivity() {
         getSupportActionBar()?.elevation = 0F
 
         var title = findViewById<EditText>(R.id.title_text)
-        val sr = SpeechRecognizer.createSpeechRecognizer(this)
 
         val fab = findViewById<View>(R.id.fab)
-        fab.setOnLongClickListener(View.OnLongClickListener {
-            /*
-            val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            sr.startListening(speechRecognizerIntent)
-            sr.setRecognitionListener(object: RecognitionListener {
 
-                override fun onResults(p0: Bundle?) {
-                    title.text = SpannableStringBuilder("Reconnaissance vocale")
-                }
-
-                override fun onReadyForSpeech(p0: Bundle?) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onBeginningOfSpeech() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onRmsChanged(p0: Float) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onBufferReceived(p0: ByteArray?) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onEndOfSpeech() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onError(p0: Int) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onPartialResults(p0: Bundle?) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onEvent(p0: Int, p1: Bundle?) {
-                    TODO("Not yet implemented")
-                }
-            })
-            
-             */
-            true
-        })
 
         fab.setOnClickListener(View.OnClickListener {
             finish()
@@ -144,10 +87,10 @@ class TodoAdd : AppCompatActivity() {
         tpicker.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(todoDate)
         dpicker.text = DateFormat.getDateInstance(DateFormat.MEDIUM, ).format(todoDate)
 
-        SimpleDateFormat()
+        //SimpleDateFormat()
 
         tpicker.setOnClickListener(View.OnClickListener {
-            val tp = TimePickerFragment { h, m ->
+            val tp = TimePickerFragment(Pair(todoDate.hours, todoDate.minutes)) { h, m ->
                 todoDate.hours = h
                 todoDate.minutes = m
                 tpicker.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(todoDate)
@@ -156,11 +99,11 @@ class TodoAdd : AppCompatActivity() {
         })
 
         dpicker.setOnClickListener(View.OnClickListener {
-            val newFragment = DatePickerFragment(this) {y, m, d ->
-                todoDate.year = y
+            val newFragment = DatePickerFragment(this, Triple(todoDate.year + 1900, todoDate.month, todoDate.date)) {y, m, d ->
+                todoDate.year = y - 1900
                 todoDate.month = m
                 todoDate.date = d
-                dpicker.text = DateFormat.getDateInstance(DateFormat.MEDIUM, ).format(todoDate)
+                dpicker.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(todoDate)
             }.show(supportFragmentManager, "datePicker")
             true
         })
