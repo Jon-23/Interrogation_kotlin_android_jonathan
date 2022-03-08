@@ -6,12 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginLeft
 import androidx.room.Room
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
 
 class MyAdapter(private val context: Context) : BaseAdapter() {
@@ -44,7 +45,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(bindings.root)
         supportActionBar?.hide()
 
-        val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "todosDB").build()
+        val db = getTodoDb(applicationContext)
+
+        CoroutineScope(SupervisorJob()).launch {
+            for(i in 10..99)
+                db.userDao().insertAll(Todo(
+                    i + 1,
+                    arrayOf(
+                        Todo.Priority.RED,
+                        Todo.Priority.ORANGE,
+                        Todo.Priority.GREEN,
+                    )[(0..2).random()],
+                    "title $i",
+                    "description $i",
+                    creationDate = "20$i-01-01 00:00:00",
+                    limitDate = "20$i-02-01 00:00:00",
+                    doneDate = "20$i-03-01 00:00:00",
+                ))
+        }
 
         val fab = bindings.fab
         val lst = bindings.list

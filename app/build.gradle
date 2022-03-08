@@ -1,8 +1,11 @@
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdk 32
@@ -48,6 +51,8 @@ dependencies {
     // kapt("androidx.room:room-compiler:$roomVersion")
     // To use Kotlin Symbolic Processing (KSP)
     //ksp("androidx.room:room-compiler:$roomVersion")
+    kapt "androidx.room:room-compiler:$roomVersion"
+   // annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'

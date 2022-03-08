@@ -22,6 +22,7 @@ class SpeechAnalysis(private val activity: AppCompatActivity) {
 
     fun start() {
         start {}
+
     }
 
     fun start(callback: (String) -> Unit) {
