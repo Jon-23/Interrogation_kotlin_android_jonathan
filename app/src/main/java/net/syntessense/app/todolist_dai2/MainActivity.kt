@@ -1,6 +1,7 @@
 package net.syntessense.app.todolist_dai2
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -42,7 +43,7 @@ class MyAdapter(private val context: Context, private var size:Int = 0) : BaseAd
 
 }
 
-class TodoAdapter(private val context: Context, private val todoDao: TodoDao) : BaseAdapter() {
+class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) : BaseAdapter() {
 
     var todos : List<Todo> = listOf()
 
@@ -66,7 +67,9 @@ class TodoAdapter(private val context: Context, private val todoDao: TodoDao) : 
                     doneDate = "20$i-03-01 00:00:00",
                 ))
             todos = todoDao.getAll()
-            self.notifyDataSetChanged()
+            context.runOnUiThread {
+                self.notifyDataSetChanged()
+            }
         }
 
     }
