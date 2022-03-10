@@ -16,6 +16,8 @@ import kotlinx.coroutines.launch
 import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
 
 class MyAdapter(private val context: Context) : BaseAdapter() {
+    var size = 0
+
     override fun getCount(): Int {
         return 50
     }
@@ -34,22 +36,26 @@ class MyAdapter(private val context: Context) : BaseAdapter() {
         return tv
     }
 
+    fun add() {
+        size += 10
+    }
+
 }
 
 class MainActivity : AppCompatActivity() {
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bindings = ActivityMainBinding.inflate(layoutInflater)
         setContentView(bindings.root)
         supportActionBar?.hide()
 
-        val db = getTodoDb(applicationContext)
+        val dao= getTodoDb(applicationContext).todoDao()
 
         CoroutineScope(SupervisorJob()).launch {
+            dao.deleteAll()
             for(i in 10..99)
-                db.userDao().insertAll(Todo(
+                dao.insertAll(Todo(
                     i + 1,
                     arrayOf(
                         Todo.Priority.RED,
@@ -73,7 +79,8 @@ class MainActivity : AppCompatActivity() {
 
         val speech2textLauncher = SpeechAnalysis(this)
 
-        lst.adapter = MyAdapter(this)
+        val adapter = MyAdapter(this)
+        lst.adapter = adapter
         lst.divider = null
         clr.visibility = View.GONE
 
@@ -91,7 +98,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         fab.setOnClickListener { view ->
-            startActivity(Intent(this, TodoAdd::class.java))
+            // startActivity(Intent(this, TodoAdd::class.java))
+            adapter.add()
+            //adapter.notifyDataSetChanged()
         }
 
         edt.addTextChangedListener(object : TextWatcher {
