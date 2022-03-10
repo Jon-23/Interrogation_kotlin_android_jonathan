@@ -19,7 +19,7 @@ class MyAdapter(private val context: Context) : BaseAdapter() {
     var size = 0
 
     override fun getCount(): Int {
-        return 50
+        return size
     }
 
     override fun getItem(i: Int): String {
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
             // startActivity(Intent(this, TodoAdd::class.java))
             adapter.add()
-            //adapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
         }
 
         edt.addTextChangedListener(object : TextWatcher {
