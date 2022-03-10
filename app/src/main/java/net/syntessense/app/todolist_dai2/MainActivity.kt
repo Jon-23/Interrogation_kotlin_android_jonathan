@@ -48,6 +48,7 @@ class TodoAdapter(private val context: Context, private val todoDao: TodoDao) : 
 
     init {
 
+        val self = this
         CoroutineScope(SupervisorJob()).launch {
             todoDao.deleteAll()
             for(i in 10..99)
@@ -65,6 +66,7 @@ class TodoAdapter(private val context: Context, private val todoDao: TodoDao) : 
                     doneDate = "20$i-03-01 00:00:00",
                 ))
             todos = todoDao.getAll()
+            self.notifyDataSetChanged()
         }
 
     }
