@@ -5,25 +5,18 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.text.Editable
-import android.text.SpannableStringBuilder
 import android.text.format.DateFormat as DF
 import android.view.View
-import android.webkit.WebSettings
 import android.widget.*
 import androidx.fragment.app.DialogFragment
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import net.syntessense.app.todolist_dai2.databinding.ActivityTodoAddBinding
 import java.text.DateFormat
 import java.util.*
@@ -59,18 +52,53 @@ class DatePickerFragment(private val activity: Context, private val showDate: Tr
 }
 
 class TodoAdd : AppCompatActivity() {
-    @SuppressLint("ClickableViewAccessibility")
+
+    lateinit var bindings : ActivityTodoAddBinding
+    lateinit var speech2textLauncher : SpeechAnalysis
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //supportActionBar?.hide()
         //getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
-        val bindings = ActivityTodoAddBinding.inflate(layoutInflater)
+        bindings = ActivityTodoAddBinding.inflate(layoutInflater)
         setContentView(bindings.root)
         getSupportActionBar()?.elevation = 0F
 
-        val speech2textLauncher = SpeechAnalysis(this)
+        speech2textLauncher = SpeechAnalysis(this)
 
-        val title = bindings.titleText
+
+        var position = 20
+        var self = this
+        var todoDao = getTodoDb(this).todoDao()
+        CoroutineScope(SupervisorJob()).launch {
+            val todo = todoDao.getPage(0, position).get(0)
+            self.runOnUiThread {
+                render(todo)
+            }
+        }
+
+    }
+
+    private fun render(todo: Todo) {
+
+        val todoDate = Date()
+
+        val dt = todo.dueDate.split(" ")
+        val timetxt = dt[1].split(":")
+        val datetxt = dt[0].split("-")
+        todoDate.year = datetxt[0].toInt() - 1900
+        todoDate.month = datetxt[1].toInt()
+        todoDate.date = datetxt[2].toInt()
+        todoDate.hours = timetxt[0].toInt()
+        todoDate.minutes = timetxt[1].toInt()
+
+
+        //todoDate
+        bindings.titleText.text = Editable.Factory.getInstance().newEditable(todo.title)
+        bindings.descText.text = Editable.Factory.getInstance().newEditable(todo.description)
+        bindings.priorityColor.setBackgroundColor(todo.priority.color.toInt())
+
+
         val fab = bindings.fab
 
 
@@ -93,16 +121,14 @@ class TodoAdd : AppCompatActivity() {
             true
         })
 
-        var priority = 0
-        var priorities = arrayOf("#00bb00", "#ff9900", "#ff0000")
-        val prio = bindings.priorityText
+        var priorities = arrayOf(Todo.Priority.GREEN, Todo.Priority.ORANGE, Todo.Priority.RED)
+        var priorityIndex = priorities.indexOf(todo.priority)
+        val prio = bindings.priorityColor
         prio.setOnClickListener(View.OnClickListener {
-            priority = (priority + 1) % priorities.size
-            prio.setBackgroundColor(Color.parseColor(priorities[priority]))
+            priorityIndex = (priorityIndex + 1) % priorities.size
+            prio.setBackgroundColor(priorities[priorityIndex].color)
         })
 
-
-        val todoDate = Date()
         val tpicker = bindings.timeText
         val dpicker = bindings.dateText
 

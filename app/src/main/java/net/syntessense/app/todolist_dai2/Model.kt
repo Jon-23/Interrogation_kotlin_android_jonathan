@@ -7,12 +7,12 @@ import androidx.room.*
 class Converter {
 
     @TypeConverter
-    fun convertPriorityToString(p: Todo.Priority): String {
+    fun convertPriorityToString(p: Todo.Priority): Int {
         return p.color
     }
 
     @TypeConverter
-    fun convertStringToPriority(color: String): Todo.Priority {
+    fun convertStringToPriority(color: Int): Todo.Priority {
         return when(color) {
             Todo.Priority.RED.color -> Todo.Priority.RED
             Todo.Priority.ORANGE.color -> Todo.Priority.ORANGE
@@ -32,18 +32,18 @@ abstract class TodoDatabase : RoomDatabase() {
 @Entity
 @TypeConverters(Converter::class)
 data class Todo(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "priority") val priority: Priority,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "creationDate") val creationDate: String,
-    @ColumnInfo(name = "limitDate") val limitDate: String,
+    @ColumnInfo(name = "limitDate") val dueDate: String,
     @ColumnInfo(name = "doneDate") val doneDate: String,
 ) {
-    sealed class Priority(val color: String) {
-        object RED : Priority("#ff0000")
-        object ORANGE: Priority("#ff9900")
-        object GREEN: Priority("#00aa00")
+    sealed class Priority(val color: Int) {
+        object RED : Priority(0xffff0000u.toInt())
+        object ORANGE: Priority(0xffff9900u.toInt())
+        object GREEN: Priority(0xff00aa00u.toInt())
     }
 }
 

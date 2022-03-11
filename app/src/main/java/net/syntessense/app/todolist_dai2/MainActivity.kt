@@ -1,6 +1,5 @@
 package net.syntessense.app.todolist_dai2
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,12 +9,10 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
-import java.text.FieldPosition
 
 class MyAdapter(private val context: Context, private var size:Int = 0) : BaseAdapter() {
 
@@ -54,7 +51,7 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
             todoDao.deleteAll()
             for(i in 10..99)
                 todoDao.insertAll(Todo(
-                    i + 1,
+                    0,
                     arrayOf(
                         Todo.Priority.RED,
                         Todo.Priority.ORANGE,
@@ -62,9 +59,9 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
                     )[(0..2).random()],
                     "title $i",
                     "description $i",
-                    creationDate = "20$i-01-01 00:00:00",
-                    limitDate = "20$i-02-01 00:00:00",
-                    doneDate = "20$i-03-01 00:00:00",
+                    creationDate = "20$i-01-01 00:00",
+                    dueDate = "20$i-02-01 00:00",
+                    doneDate = "20$i-03-01 00:00",
                 ))
             todos = todoDao.getAll()
             context.runOnUiThread {
@@ -102,6 +99,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(bindings.root)
         supportActionBar?.hide()
 
+        val speech2textLauncher = SpeechAnalysis(this)
+
         val dao= getTodoDb(applicationContext).todoDao()
         val fab = bindings.fab
         val lst = bindings.list
@@ -110,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         val men = bindings.filterBar.menu
         val mic = bindings.filterBar.micro
 
-        val speech2textLauncher = SpeechAnalysis(this)
+
 
         val adapter = TodoAdapter(this, dao)
         lst.adapter = adapter
