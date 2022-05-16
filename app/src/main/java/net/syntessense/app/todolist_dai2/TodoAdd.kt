@@ -67,13 +67,23 @@ class TodoAdd : AppCompatActivity() {
         speech2textLauncher = SpeechAnalysis(this)
 
 
+        val special = Todo(
+            0,
+            Todo.Priority.RED,
+            "Mon Special Todo",
+            "Mon Special todo description",
+            "2020-08-31  04:00",
+            "2020-12-31 23:59",
+            "2020-10-31 01:00"
+        )
+
         var position = 20
         var self = this
         var todoDao = getTodoDb(this).todoDao()
         CoroutineScope(SupervisorJob()).launch {
             val todo = todoDao.getPage(0, position).get(0)
             self.runOnUiThread {
-                render(todo)
+                render(special)
             }
         }
 
