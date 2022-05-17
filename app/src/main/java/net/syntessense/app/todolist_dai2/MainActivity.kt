@@ -13,7 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
+import net.syntessense.app.todolist_dai2.databinding.ListItemBinding
 
+/*
 class MyAdapter(private val context: Context, private var size:Int = 0) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -39,6 +41,7 @@ class MyAdapter(private val context: Context, private var size:Int = 0) : BaseAd
     }
 
 }
+*/
 
 class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) : BaseAdapter() {
 
@@ -79,14 +82,18 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
         return todos[position]
     }
 
-    override fun getItemId(i: Int): Long {
-        return i.toLong()
+    override fun getItemId(position: Int): Long {
+        return todos[position].id.toLong()
     }
 
     override fun getView(i: Int, convertView: View?, parent: ViewGroup?): View {
-        val tv = (convertView ?: LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)) as TextView
-        tv.text = todos[i].title
-        return tv
+        val binding = if ( convertView != null )
+            ListItemBinding.bind(convertView) else
+                ListItemBinding.inflate(context.layoutInflater, parent, false)
+
+        binding.item.text = todos[i].title
+        binding.priorityColor.setBackgroundColor(todos[i].priority.color)
+        return binding.root
     }
 
 }
@@ -101,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
         val speech2textLauncher = SpeechAnalysis(this)
 
-        val dao= getTodoDb(applicationContext).todoDao()
+        val dao = getTodoDb(applicationContext).todoDao()
         val fab = bindings.fab
         val lst = bindings.list
         val edt = bindings.filterBar.filterText
