@@ -23,7 +23,7 @@ class Converter {
 }
 
 
-@Database(entities = [Todo::class], version = 1)
+@Database(entities = [Todo::class], version = 2)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 }
@@ -37,7 +37,7 @@ data class Todo(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "creationDate") val creationDate: String,
-    @ColumnInfo(name = "limitDate") val dueDate: String,
+    @ColumnInfo(name = "dueDate") val dueDate: String,
     @ColumnInfo(name = "doneDate") val doneDate: String,
 ) {
     sealed class Priority(val color: Int) {
@@ -76,6 +76,8 @@ fun getTodoDb(applicationContext: Context): TodoDatabase {
     return Room.databaseBuilder(
         applicationContext,
         TodoDatabase::class.java, "database-name"
-    ).addTypeConverter(Converter()).build()
+    ).addTypeConverter(Converter())
+        .fallbackToDestructiveMigration()
+        .build()
 }
 

@@ -51,21 +51,6 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
 
         val self = this
         CoroutineScope(SupervisorJob()).launch {
-            todoDao.deleteAll()
-            for(i in 10..99)
-                todoDao.insertAll(Todo(
-                    0,
-                    arrayOf(
-                        Todo.Priority.RED,
-                        Todo.Priority.ORANGE,
-                        Todo.Priority.GREEN,
-                    )[(0..2).random()],
-                    "title $i",
-                    "description $i",
-                    creationDate = "20$i-01-01 00:00",
-                    dueDate = "20$i-02-01 00:00",
-                    doneDate = "20$i-03-01 00:00",
-                ))
             todos = todoDao.getAll()
             context.runOnUiThread {
                 self.notifyDataSetChanged()

@@ -55,11 +55,14 @@ class TodoAdd : AppCompatActivity() {
 
     lateinit var bindings : ActivityTodoAddBinding
     lateinit var speech2textLauncher : SpeechAnalysis
+    lateinit var todoDao : TodoDao
+    private val context = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //supportActionBar?.hide()
         //getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
+        todoDao = getTodoDb(this).todoDao()
         bindings = ActivityTodoAddBinding.inflate(layoutInflater)
         setContentView(bindings.root)
         getSupportActionBar()?.elevation = 0F
@@ -72,20 +75,20 @@ class TodoAdd : AppCompatActivity() {
             Todo.Priority.RED,
             "Mon Special Todo",
             "Mon Special todo description",
-            "2020-08-31  04:00",
+            "2020-08-31 04:00",
             "2020-12-31 23:59",
             "2020-10-31 01:00"
         )
+        render(special)
 
-        var position = 20
+        /*var position = 20
         var self = this
-        var todoDao = getTodoDb(this).todoDao()
         CoroutineScope(SupervisorJob()).launch {
             val todo = todoDao.getPage(0, position).get(0)
             self.runOnUiThread {
-                render(special)
+
             }
-        }
+        }*/
 
     }
 
@@ -97,10 +100,11 @@ class TodoAdd : AppCompatActivity() {
         val timetxt = dt[1].split(":")
         val datetxt = dt[0].split("-")
         todoDate.year = datetxt[0].toInt() - 1900
-        todoDate.month = datetxt[1].toInt()
+        todoDate.month = datetxt[1].toInt() - 1
         todoDate.date = datetxt[2].toInt()
         todoDate.hours = timetxt[0].toInt()
         todoDate.minutes = timetxt[1].toInt()
+
 
 
         //todoDate
@@ -126,13 +130,26 @@ class TodoAdd : AppCompatActivity() {
             true
         }
 
+        var priorities = arrayOf(Todo.Priority.GREEN, Todo.Priority.ORANGE, Todo.Priority.RED)
+        var priorityIndex = priorities.indexOf(todo.priority)
+
         fab.setOnClickListener(View.OnClickListener {
-            finish()
+            CoroutineScope(SupervisorJob()).launch {
+                todoDao.insertAll(Todo(
+                    0,
+                    priorities[priorityIndex],
+                    bindings.titleText.text.toString(),
+                    bindings.descText.text.toString(),
+                    "2020-08-31 04:00",
+                    "${todoDate.year + 1900}-${todoDate.month + 1}-${todoDate.date} ${todoDate.hours}:${todoDate.minutes}",
+                    "2020-10-31 01:00"
+                ))
+                finish()
+            }
+
             true
         })
 
-        var priorities = arrayOf(Todo.Priority.GREEN, Todo.Priority.ORANGE, Todo.Priority.RED)
-        var priorityIndex = priorities.indexOf(todo.priority)
         val prio = bindings.priorityColor
         prio.setOnClickListener(View.OnClickListener {
             priorityIndex = (priorityIndex + 1) % priorities.size
@@ -143,7 +160,7 @@ class TodoAdd : AppCompatActivity() {
         val dpicker = bindings.dateText
 
         tpicker.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(todoDate)
-        dpicker.text = DateFormat.getDateInstance(DateFormat.MEDIUM, ).format(todoDate)
+        dpicker.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(todoDate)
 
         //SimpleDateFormat()
 
@@ -157,9 +174,9 @@ class TodoAdd : AppCompatActivity() {
         })
 
         dpicker.setOnClickListener(View.OnClickListener {
-            val newFragment = DatePickerFragment(this, Triple(todoDate.year + 1900, todoDate.month, todoDate.date)) {y, m, d ->
+            val newFragment = DatePickerFragment(this, Triple(todoDate.year + 1900, todoDate.month + 1, todoDate.date)) {y, m, d ->
                 todoDate.year = y - 1900
-                todoDate.month = m
+                todoDate.month = m - 1
                 todoDate.date = d
                 dpicker.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(todoDate)
             }.show(supportFragmentManager, "datePicker")
