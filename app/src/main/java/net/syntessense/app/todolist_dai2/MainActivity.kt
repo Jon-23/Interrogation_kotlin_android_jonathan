@@ -48,7 +48,10 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
     var todos : List<Todo> = listOf()
 
     init {
+        refresh()
+    }
 
+    fun refresh() {
         val self = this
         CoroutineScope(SupervisorJob()).launch {
             todos = todoDao.getAll()
@@ -56,7 +59,6 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
                 self.notifyDataSetChanged()
             }
         }
-
     }
 
     override fun getCount(): Int {
@@ -85,6 +87,13 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var adapter : TodoAdapter
+
+    override fun onResume() {
+        super.onResume()
+        adapter.refresh()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bindings = ActivityMainBinding.inflate(layoutInflater)
@@ -103,7 +112,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val adapter = TodoAdapter(this, dao)
+        adapter = TodoAdapter(this, dao)
         lst.adapter = adapter
         lst.divider = null
         clr.visibility = View.GONE
