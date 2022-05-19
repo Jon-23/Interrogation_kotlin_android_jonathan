@@ -110,7 +110,7 @@ class TodoAdd : AppCompatActivity() {
         CoroutineScope(SupervisorJob()).launch {
 
             var todo = special
-            var action = extras?.get("Modification")
+            var action = extras?.get("Action")
 
             if(action == null){
                 action = "Modification"
