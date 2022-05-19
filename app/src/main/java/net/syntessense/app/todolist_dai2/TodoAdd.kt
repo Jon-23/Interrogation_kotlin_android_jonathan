@@ -10,6 +10,7 @@ import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.text.format.DateFormat as DF
 import android.view.View
 import android.widget.*
@@ -70,7 +71,7 @@ class TodoAdd : AppCompatActivity() {
         speech2textLauncher = SpeechAnalysis(this)
 
 
-        val special = Todo(
+        var special = Todo(
             0,
             Todo.Priority.RED,
             "Mon Special Todo",
@@ -79,16 +80,55 @@ class TodoAdd : AppCompatActivity() {
             "2020-12-31 23:59",
             "2020-10-31 01:00"
         )
-        render(special)
+        val extras = intent.extras
+        val id_todo = extras?.getLong("id_todo")
 
-        /*var position = 20
-        var self = this
-        CoroutineScope(SupervisorJob()).launch {
-            val todo = todoDao.getPage(0, position).get(0)
-            self.runOnUiThread {
+        if (id_todo != null) {
+            if(id_todo > 0L ){
+                special = Todo(
+                    0,
+                    Todo.Priority.RED,
+                    "todo id $id_todo",
+                    "Mon Special todo description",
+                    "2020-08-31 04:00",
+                    "2020-12-31 23:59",
+                    "2020-10-31 01:00"
+                )
+                val self = this
+
+                suspend fun getTodo(id_todo_temp: Long): Todo {
+                    return todoDao.getTodoId(id_todo_temp)
+                }
 
             }
-        }*/
+        }
+
+
+
+        var position = 20
+        var self = this
+        CoroutineScope(SupervisorJob()).launch {
+
+            var todo = special
+            var action = extras?.get("Modification")
+
+            if(action == null){
+                action = "Modification"
+            }else{
+                action = action.toString()
+            }
+
+
+            if (id_todo != null ) {
+                if(id_todo > 0L ){
+                    todo = todoDao.getTodoId(id_todo)
+                }
+            }
+
+            self.runOnUiThread {
+                render(todo)
+            }
+        }
 
     }
 
@@ -133,17 +173,41 @@ class TodoAdd : AppCompatActivity() {
         var priorities = arrayOf(Todo.Priority.GREEN, Todo.Priority.ORANGE, Todo.Priority.RED)
         var priorityIndex = priorities.indexOf(todo.priority)
 
+        val extras = intent.extras
         fab.setOnClickListener(View.OnClickListener {
+
+            var action = extras?.get("Action")
+
+            if(action == null){
+                action = "Création"
+            }else{
+                action = action.toString()
+            }
+
             CoroutineScope(SupervisorJob()).launch {
-                todoDao.insertAll(Todo(
-                    0,
-                    priorities[priorityIndex],
-                    bindings.titleText.text.toString(),
-                    bindings.descText.text.toString(),
-                    "2020-08-31 04:00",
-                    "${todoDate.year + 1900}-${todoDate.month + 1}-${todoDate.date} ${todoDate.hours}:${todoDate.minutes}",
-                    "2020-10-31 01:00"
-                ))
+                if(action == "Création") {
+                    todoDao.insertAll(
+                        Todo(
+                            0,
+                            priorities[priorityIndex],
+                            bindings.titleText.text.toString(),
+                            bindings.descText.text.toString(),
+                            "2020-08-31 04:00",
+                            "${todoDate.year + 1900}-${todoDate.month + 1}-${todoDate.date} ${todoDate.hours}:${todoDate.minutes}",
+                            "2020-10-31 01:00"
+                        )
+                    )
+                }else if(action == "Modification"){
+                    todoDao.update(Todo(
+                        todo.id,
+                        priorities[priorityIndex],
+                        bindings.titleText.text.toString(),
+                        bindings.descText.text.toString(),
+                        "2020-08-31 04:00",
+                        "${todoDate.year + 1900}-${todoDate.month + 1}-${todoDate.date} ${todoDate.hours}:${todoDate.minutes}",
+                        "2020-10-31 01:00"
+                    ))
+                }
                 finish()
             }
 

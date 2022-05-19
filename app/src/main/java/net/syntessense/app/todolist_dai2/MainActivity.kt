@@ -1,4 +1,8 @@
 package net.syntessense.app.todolist_dai2
+import net.syntessense.app.todolist_dai2.Todo
+import net.syntessense.app.todolist_dai2.TodoAdd
+import net.syntessense.app.todolist_dai2.TodoDao
+
 
 import android.app.Activity
 import android.content.Context
@@ -6,8 +10,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -15,7 +22,6 @@ import kotlinx.coroutines.launch
 import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
 import net.syntessense.app.todolist_dai2.databinding.ListItemBinding
 
-/*
 class MyAdapter(private val context: Context, private var size:Int = 0) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -41,17 +47,15 @@ class MyAdapter(private val context: Context, private var size:Int = 0) : BaseAd
     }
 
 }
-*/
 
-class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) : BaseAdapter() {
+class TodoAdapter(private val context: MainActivity, private val todoDao: TodoDao) : BaseAdapter() {
 
-    var todos : List<Todo> = listOf()
-
+    var todos: List<Todo> = listOf()
     init {
         refresh()
     }
 
-    fun refresh() {
+    fun refresh(){
         val self = this
         CoroutineScope(SupervisorJob()).launch {
             todos = todoDao.getAll()
@@ -60,7 +64,6 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
             }
         }
     }
-
     override fun getCount(): Int {
         return todos.size
     }
@@ -69,17 +72,37 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
         return todos[position]
     }
 
-    override fun getItemId(position: Int): Long {
-        return todos[position].id.toLong()
+    override fun getItemId(i: Int): Long {
+        return todos[i].id.toLong()
     }
 
     override fun getView(i: Int, convertView: View?, parent: ViewGroup?): View {
-        val binding = if ( convertView != null )
-            ListItemBinding.bind(convertView) else
-                ListItemBinding.inflate(context.layoutInflater, parent, false)
 
-        binding.item.text = todos[i].title
+        val binding = if( convertView != null) ListItemBinding.bind(convertView) else ListItemBinding.inflate(context.layoutInflater,parent,false)
+
+
+        /*val cl = (convertView ?: LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)) as ConstraintLayout
+        val tv = cl.findViewById<TextView>(R.id.item)
+        val pr = cl.findViewById<TextView>(R.id.priority_color)*/
+
         binding.priorityColor.setBackgroundColor(todos[i].priority.color)
+        binding.item.text = todos[i].title
+        var self = this
+        binding.item.setOnLongClickListener{
+            CoroutineScope(SupervisorJob()).launch {
+                todoDao.deleteTodoId(todos[i].id.toLong())
+                //self.refresh()
+            }
+            true
+        }
+        binding.item.setOnClickListener { view ->
+            Intent(context, TodoAdd::class.java).let{
+                it.putExtra("Action","Modification")
+                it.putExtra("id_todo",todos[i].id.toLong())
+                context.addLauncher.launch(it)
+            }
+            true
+        }
         return binding.root
     }
 
@@ -87,6 +110,7 @@ class TodoAdapter(private val context: Activity, private val todoDao: TodoDao) :
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var addLauncher : ActivityResultLauncher<Intent>
     lateinit var adapter : TodoAdapter
 
     override fun onResume() {
@@ -100,9 +124,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(bindings.root)
         supportActionBar?.hide()
 
+
         val speech2textLauncher = SpeechAnalysis(this)
 
         val dao = getTodoDb(applicationContext).todoDao()
+        addLauncher = this.registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            adapter.refresh()
+        }
         val fab = bindings.fab
         val lst = bindings.list
         val edt = bindings.filterBar.filterText
@@ -131,7 +159,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         fab.setOnClickListener { view ->
-            startActivity(Intent(this, TodoAdd::class.java))
+            Intent(this, TodoAdd::class.java).let{
+                it.putExtra("Action","Création")
+                addLauncher.launch(it)
+            }
             //adapter.add()
             //adapter.notifyDataSetChanged()
         }

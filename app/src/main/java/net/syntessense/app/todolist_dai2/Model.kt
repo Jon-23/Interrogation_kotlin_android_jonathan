@@ -55,6 +55,9 @@ interface TodoDao {
     @Query("SELECT * FROM todo")
     fun getAll(): List<Todo>
 
+    @Query("SELECT * FROM todo WHERE id = :id")
+    fun getTodoId(id: Long): Todo
+
     @Query("DELETE FROM todo WHERE 1")
     fun deleteAll(): Unit
 
@@ -67,6 +70,9 @@ interface TodoDao {
 
     @Insert
     fun insertAll(vararg todo: Todo)
+
+    @Query(" DELETE FROM todo  WHERE id = :id")
+    fun deleteTodoId(id: Long)
 
     @Delete
     fun delete(user: Todo)
