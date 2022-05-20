@@ -38,42 +38,30 @@ class CustomAdapter(private val context: MainActivity, private val todoDao: Todo
             }
         }
     }
-
+    // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
+        // inflates the card_view_design view
+        // that is used to hold list item
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item, parent, false)
 
         return ViewHolder(view)
     }
 
+    // binds the list items to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val todo = todos[position]
+        val ItemsViewModel = todos[position]
 
-        holder.textView.text = todo.title.toString()
-        holder.priorityView.setBackgroundColor(todo.priority.color)
-        var self = this
-        holder.textView.setOnLongClickListener{
-            CoroutineScope(SupervisorJob()).launch {
-                todoDao.deleteTodoId(todo.id.toLong())
-                self.refresh()
-            }
-            true
-        }
-        holder.textView.setOnClickListener { view ->
-            Intent(context, TodoAdd::class.java).let{
-                it.putExtra("Action","Modification")
-                it.putExtra("id_todo",todo.id.toLong())
+        // sets the image to the imageview from our itemHolder class
+        //holder.imageView.setImageResource(ItemsViewModel.image)
 
-                context.addLauncher.launch(it)
-            }
-            true
-        }
+        // sets the text to the textview from our itemHolder class
+        holder.textView.text = ItemsViewModel.title.toString()
 
     }
 
-
+    // return the number of the items in the list
     override fun getItemCount(): Int {
         return todos.size
     }
@@ -86,11 +74,10 @@ class CustomAdapter(private val context: MainActivity, private val todoDao: Todo
         return todos[i].id.toLong()
     }
 
-
+    // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+       // val imageView: ImageView = itemView.findViewById(R.id.)
         val textView: TextView = itemView.findViewById(R.id.item)
-        val priorityView: TextView = itemView.findViewById(R.id.priority_color)
-
     }
 }
 
@@ -159,8 +146,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var addLauncher : ActivityResultLauncher<Intent>
     //lateinit var adapter : TodoAdapter
-    lateinit var adapter : CustomAdapter
 
+    lateinit var adapter : CustomAdapter
     override fun onResume() {
         super.onResume()
         adapter.refresh()
