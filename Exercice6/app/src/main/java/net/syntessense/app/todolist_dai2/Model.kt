@@ -32,7 +32,7 @@ abstract class TodoDatabase : RoomDatabase() {
 @Entity
 @TypeConverters(Converter::class)
 data class Todo(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     @ColumnInfo(name = "priority") val priority: Priority,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "description") val description: String,
