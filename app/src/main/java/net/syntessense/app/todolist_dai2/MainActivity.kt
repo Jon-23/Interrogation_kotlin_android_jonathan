@@ -16,36 +16,82 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import net.syntessense.app.todolist_dai2.databinding.ActivityMainBinding
 import net.syntessense.app.todolist_dai2.databinding.ListItemBinding
 
-class MyAdapter(private val context: Context, private var size:Int = 0) : BaseAdapter() {
+class CustomAdapter(private val context: MainActivity, private val todoDao: TodoDao) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
-    override fun getCount(): Int {
-        return size
+    var todos: List<Todo> = listOf()
+    init {
+        refresh()
+    }
+    fun refresh(){
+        val self = this
+        CoroutineScope(SupervisorJob()).launch {
+            todos = todoDao.getAll()
+            context.runOnUiThread {
+                self.notifyDataSetChanged()
+            }
+        }
     }
 
-    override fun getItem(i: Int): String {
-        return "ToDo number $i"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item, parent, false)
+
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        val todo = todos[position]
+
+        holder.textView.text = todo.title.toString()
+        holder.priorityView.setBackgroundColor(todo.priority.color)
+        var self = this
+        holder.textView.setOnLongClickListener{
+            CoroutineScope(SupervisorJob()).launch {
+                todoDao.deleteTodoId(todo.id.toLong())
+                self.refresh()
+            }
+            true
+        }
+        holder.textView.setOnClickListener { view ->
+            Intent(context, TodoAdd::class.java).let{
+                it.putExtra("Action","Modification")
+                it.putExtra("id_todo",todo.id.toLong())
+
+                context.addLauncher.launch(it)
+            }
+            true
+        }
+
+    }
+
+
+    override fun getItemCount(): Int {
+        return todos.size
+    }
+
+    fun getItem(position: Int): Any {
+        return todos[position]
     }
 
     override fun getItemId(i: Int): Long {
-        return i.toLong()
+        return todos[i].id.toLong()
     }
 
-    override fun getView(i: Int, convertView: View?, parent: ViewGroup?): View {
-        val tv = (convertView ?: LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)) as TextView
-        tv.text = getItem(i)
-        return tv
-    }
 
-    fun add() {
-        size += 10
-    }
+    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+        val textView: TextView = itemView.findViewById(R.id.item)
+        val priorityView: TextView = itemView.findViewById(R.id.priority_color)
 
+    }
 }
 
 class TodoAdapter(private val context: MainActivity, private val todoDao: TodoDao) : BaseAdapter() {
@@ -112,7 +158,8 @@ class TodoAdapter(private val context: MainActivity, private val todoDao: TodoDa
 class MainActivity : AppCompatActivity() {
 
     lateinit var addLauncher : ActivityResultLauncher<Intent>
-    lateinit var adapter : TodoAdapter
+    //lateinit var adapter : TodoAdapter
+    lateinit var adapter : CustomAdapter
 
     override fun onResume() {
         super.onResume()
@@ -133,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             adapter.refresh()
         }
         val fab = bindings.fab
-        val lst = bindings.list
+        val lst = bindings.recyclerMain
         val edt = bindings.filterBar.filterText
         val clr = bindings.filterBar.clearText
         val men = bindings.filterBar.menu
@@ -141,9 +188,10 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        adapter = TodoAdapter(this, dao)
+        //adapter = TodoAdapter(this, dao)
+        adapter = CustomAdapter(this,dao)
         lst.adapter = adapter
-        lst.divider = null
+        //lst.divider = null
         clr.visibility = View.GONE
 
         mic.setOnClickListener {
