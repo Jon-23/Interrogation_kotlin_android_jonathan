@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:paddingTop="7.5dp"
+    android:paddingBottom="5dp"
+    android:layout_weight="0">
+
+    <EditText
+        android:id="@+id/filter_text"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="45dp"
+        android:paddingEnd="45dp"
+        android:background="@drawable/rounded_bar"
+        android:textColor="@color/white"
+        android:textColorHint="#aaaaaa"
+        android:hint="@string/filter"
+        tools:ignore="MissingConstraints" />
+
+    <ImageButton
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#333333"
+        app:layout_constraintBottom_toBottomOf="@+id/filter_text"
+        app:layout_constraintTop_toTopOf="@+id/filter_text"
+        app:layout_constraintStart_toStartOf="@id/filter_text"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/menu" />
+
+    <ImageButton
+        android:id="@+id/clear_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#333333"
+        app:layout_constraintBottom_toBottomOf="@+id/filter_text"
+        app:layout_constraintTop_toTopOf="@+id/filter_text"
+        app:layout_constraintEnd_toEndOf="@id/filter_text"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/remove_text" />
+
+    <ImageButton
+        android:id="@+id/micro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:background="#333333"
+        android:src="@drawable/micro"
+        app:layout_constraintBottom_toBottomOf="@+id/filter_text"
+        app:layout_constraintEnd_toEndOf="@id/filter_text"
+        app:layout_constraintTop_toTopOf="@+id/filter_text" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TODOLIST_DAI2</string>
+    <string name="hello">Hello World !</string>
+    <string name="todo">TODO number %1$d</string>
+    <string name="filter">filter</string>
+    <string name="add">add</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+</resources>
