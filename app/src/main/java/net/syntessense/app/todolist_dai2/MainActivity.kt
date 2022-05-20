@@ -91,7 +91,7 @@ class TodoAdapter(private val context: MainActivity, private val todoDao: TodoDa
         binding.item.setOnLongClickListener{
             CoroutineScope(SupervisorJob()).launch {
                 todoDao.deleteTodoId(todos[i].id.toLong())
-                //self.refresh()
+                self.refresh()
             }
             true
         }
@@ -99,6 +99,7 @@ class TodoAdapter(private val context: MainActivity, private val todoDao: TodoDa
             Intent(context, TodoAdd::class.java).let{
                 it.putExtra("Action","Modification")
                 it.putExtra("id_todo",todos[i].id.toLong())
+
                 context.addLauncher.launch(it)
             }
             true
